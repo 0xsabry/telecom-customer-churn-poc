@@ -156,7 +156,7 @@ python src/build_polished_gci_pdf.py
 **Mohamed Sabry Hamdan**  
 *SOC Analyst | Security Engineer | Data & ML Specialist*  
 - **GitHub:** [@0xsabry](https://github.com/0xsabry)  
-- **LinkedIn:** [Mohamed Sabry](https://www.linkedin.com/in/mohamedsabry01/)  
+- **LinkedIn:** [Mohamed Sabry Hamdan](https://www.linkedin.com/in/mohamed-sabry-hamdan)  
 
 *Course Acknowledgments: **Global AI Course (GCI World 2026 Spring)** conducted by **Matsuo-Iwasawa Laboratory, The University of Tokyo**.*
 
