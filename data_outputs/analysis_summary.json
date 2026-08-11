@@ -1,0 +1,47 @@
+{
+  "summary": {
+    "rows": 100000,
+    "columns": 100,
+    "churn_rate": 0.49562,
+    "avg_monthly_revenue": 58.71998484590209,
+    "avg_monthly_revenue_churners": 58.211073936641824,
+    "avg_monthly_revenue_retained": 59.21869245850767,
+    "median_eqpdays_churners": 366.0,
+    "median_eqpdays_retained": 310.0,
+    "mean_drop_blk_churners": 9.797751637655564,
+    "mean_drop_blk_retained": 10.286563041077638,
+    "mean_custcare_churners": 1.5956882288717364,
+    "mean_custcare_retained": 1.9825990985489512
+  },
+  "metrics": {
+    "model_name": "L2-regularized Logistic Regression",
+    "evaluation_metric": "ROC-AUC on 25% holdout test set",
+    "roc_auc": 0.6283320313879038,
+    "pr_auc": 0.5997136149590049,
+    "accuracy_at_0_5_threshold": 0.5966352894051672,
+    "precision_at_0_5_threshold": 0.5902943516308672,
+    "recall_at_0_5_threshold": 0.6012965964343598,
+    "f1_at_0_5_threshold": 0.5957446808510639,
+    "test_rows": 24965
+  },
+  "impact": {
+    "baseline_churn_rate": 0.49562,
+    "top20_churn_rate": 0.637692769877829,
+    "top20_capture_rate": 0.2580226904376013,
+    "top20_lift_vs_average": 1.286656652027418,
+    "top20_avg_monthly_revenue": 59.76401693890301,
+    "full_base_monthly_revenue_at_risk": 2870795.533333365,
+    "full_base_churners": 49562,
+    "campaign_targets_full_base": 20000,
+    "assumed_offer_cost_per_target": 10.0,
+    "assumed_save_rate": 0.15,
+    "assumed_gross_margin": 0.55,
+    "assumed_retained_months": 12,
+    "expected_churners_in_targets": 12753.85539755658,
+    "expected_saved_customers": 1913.0783096334867,
+    "estimated_gross_margin_saved": 754599.413715732,
+    "estimated_offer_cost": 200000.0,
+    "estimated_net_margin_impact": 554599.413715732,
+    "roi_multiple": 2.7729970685786602
+  }
+}
