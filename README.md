@@ -142,6 +142,14 @@ python src/gci_telecom_churn_analysis.py
 python src/build_polished_gci_pdf.py
 ```
 
+### 5. Run the metric tests
+```bash
+python -m unittest discover -s tests -v
+```
+
+The tests compare the custom ROC-AUC and average-precision implementations with
+scikit-learn, including cases where multiple customers receive tied risk scores.
+
 ---
 
 ## 📄 Executive Deliverables

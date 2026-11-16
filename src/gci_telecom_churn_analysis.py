@@ -106,26 +106,64 @@ def draw_line_chart(path, title, labels, values, ylabel="", percent=True):
     im.save(path)
 
 
-def auc_score(y, scores):
+def _binary_score_inputs(y, scores):
     y = np.asarray(y)
-    scores = np.asarray(scores)
-    order = np.argsort(scores)
-    ranks = np.empty_like(order, dtype=float)
-    ranks[order] = np.arange(1, len(scores) + 1)
-    pos = y == 1
-    n_pos = pos.sum()
+    scores = np.asarray(scores, dtype=float)
+    if y.ndim != 1 or scores.ndim != 1:
+        raise ValueError("y and scores must be one-dimensional")
+    if len(y) != len(scores) or len(y) == 0:
+        raise ValueError("y and scores must have the same non-zero length")
+    if not np.isin(y, (0, 1)).all():
+        raise ValueError("y must contain only binary labels 0 and 1")
+    if not np.isfinite(scores).all():
+        raise ValueError("scores must contain only finite values")
+    if not np.any(y == 1) or not np.any(y == 0):
+        raise ValueError("y must contain at least one sample from each class")
+    return y, scores
+
+
+def auc_score(y, scores):
+    """Return binary ROC-AUC, assigning tied scores their average rank."""
+    y, scores = _binary_score_inputs(y, scores)
+    order = np.argsort(scores, kind="mergesort")
+    sorted_scores = scores[order]
+    ranks = np.empty(len(scores), dtype=float)
+
+    start = 0
+    while start < len(scores):
+        end = start + 1
+        while end < len(scores) and sorted_scores[end] == sorted_scores[start]:
+            end += 1
+        # The sorted slice occupies one-based ranks start+1 through end.
+        ranks[order[start:end]] = (start + 1 + end) / 2
+        start = end
+
+    n_pos = int(np.sum(y == 1))
     n_neg = len(y) - n_pos
-    return float((ranks[pos].sum() - n_pos * (n_pos + 1) / 2) / (n_pos * n_neg))
+    return float(
+        (ranks[y == 1].sum() - n_pos * (n_pos + 1) / 2) / (n_pos * n_neg)
+    )
 
 
 def average_precision(y, scores):
-    y = np.asarray(y)
-    scores = np.asarray(scores)
-    order = np.argsort(-scores)
+    """Return binary average precision, evaluating precision at score thresholds."""
+    y, scores = _binary_score_inputs(y, scores)
+    order = np.argsort(-scores, kind="mergesort")
+    sorted_scores = scores[order]
     y_sorted = y[order]
-    cum_tp = np.cumsum(y_sorted)
-    precision = cum_tp / (np.arange(len(y_sorted)) + 1)
-    return float((precision * y_sorted).sum() / max(1, y.sum()))
+    cumulative_true_positives = np.cumsum(y_sorted == 1)
+
+    # Include only the last item at each distinct score threshold, so tied
+    # examples are considered together rather than in arbitrary array order.
+    threshold_ends = np.r_[
+        np.flatnonzero(sorted_scores[:-1] != sorted_scores[1:]), len(scores) - 1
+    ]
+    true_positives = cumulative_true_positives[threshold_ends]
+    predicted_positives = threshold_ends + 1
+    precision = true_positives / predicted_positives
+    recall = true_positives / np.sum(y == 1)
+    recall_increments = np.diff(np.r_[0.0, recall])
+    return float(np.sum(recall_increments * precision))
 
 
 def prepare_features(train_df, test_df, target):
